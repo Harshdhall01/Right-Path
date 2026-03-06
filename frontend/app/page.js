@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Zap, MessageCircle, BarChart2, Brain } from "lucide-react";
 import dynamic from "next/dynamic";
 
-const Robot = dynamic(() => import("@/components/Robot"), { ssr: false });
+const Robot = dynamic(() => import("@/components/robot"), { ssr: false });
 
 const features = [
   {
