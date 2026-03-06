@@ -1,7 +1,7 @@
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import CustomCursor from "@/components/CustomCursor";
-import SessionProvider from "@/components/SessionProvider";
+import Navbar from "@/components/navbar";
+import CustomCursor from "@/components/customcursor";
+import SessionProvider from "@/components/sessionprovider";
 
 export const metadata = {
   title: "RightPath — AI JEE Counsellor",
