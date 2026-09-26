@@ -1,17 +1,28 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 export default function Robot() {
   const mountRef = useRef(null);
+  const [webglFailed, setWebglFailed] = useState(false);
 
   useEffect(() => {
     const mount = mountRef.current;
+    if (!mount) return;
+
     const W = mount.clientWidth;
     const H = mount.clientHeight;
 
-    // ── RENDERER ──
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // ── RENDERER (guarded) ──
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    } catch (err) {
+      console.error("WebGL context could not be created:", err);
+      setWebglFailed(true);
+      return; // stop here, don't touch scene/camera/etc.
+    }
+
     renderer.setSize(W, H);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
@@ -326,10 +337,24 @@ export default function Robot() {
       window.removeEventListener("mousemove", onMove2);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
-      mount.removeChild(renderer.domElement);
+      if (mount.contains(renderer.domElement)) {
+        mount.removeChild(renderer.domElement);
+      }
       renderer.dispose();
     };
   }, []);
+
+  // Fallback UI when WebGL isn't available — no crash, just skip the 3D robot
+  if (webglFailed) {
+    return (
+      <div
+        className="w-full h-full flex items-center justify-center text-sm text-gray-400"
+        style={{ minHeight: "200px" }}
+      >
+        3D preview unavailable on this device.
+      </div>
+    );
+  }
 
   return (
     <div
